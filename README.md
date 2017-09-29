@@ -11,7 +11,7 @@ Dead simple state management for react.
 
 ## Examples
 
-* [Counter](https://github.com/ronelliott/kortex-example-counter)]
+* [Counter](https://github.com/ronelliott/kortex-example-counter)
 
 ## Usage
 
