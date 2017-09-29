@@ -17,6 +17,9 @@
   "bugs": {
     "url": "https://github.com/ronelliott/kortex/issues"
   },
+  "engines": {
+    "node" : ">=8.5.0",
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
     "coverage:upload": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
