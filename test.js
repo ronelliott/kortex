@@ -52,6 +52,14 @@ describe("kortex", function() {
 		});
 	});
 
+	describe("get", function() {
+		it("should work correctly", function() {
+			expect(state.get("get_work_correctly_foo")).to.be(undefined);
+			state.set("get_work_correctly_foo", "foo");
+			expect(state.get("get_work_correctly_foo")).to.be("foo");
+		});
+	});
+
 	describe("module", function() {
 		it("should not register the actions specified in the module if they do not exist", function() {
 			state.module("module_register_actions_non_existing", {});

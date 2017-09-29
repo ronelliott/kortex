@@ -49,6 +49,8 @@ const connect = (requested, Component) => {
 	}
 }
 
+const get = path => objectPath.get(state, path);
+
 const mod = (namespace, mod) => {
 	if (mod.actions) {
 		actions[namespace] = mod.actions;
@@ -134,6 +136,7 @@ module.exports = {
 	action,
 	actions,
 	connect,
+	get,
 	module: mod,
 	modules: mods,
 	props,
