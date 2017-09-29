@@ -50,10 +50,10 @@ import { run } from "kortex";
 run.set("foo");                             // passes no parameters, nor uses a callback
 run.set("foo", "foo");                      // passes "foo" as a parameter, does not use a callback
 run.set("foo.bar", "foo", err => {          // passes "foo" as a parameter and uses a callback
-	if (err) console.error(err);
+  if (err) console.error(err);
 });
 run.set("foo.bar", "foo", "bar", err => {   // explodes, only pass one param
-	if (err) console.error(err);
+  if (err) console.error(err);
 });
 ```
 
@@ -68,8 +68,8 @@ const bar = require('./bar');
 import { module as mod, modules } from "kortex";
 mod("foo", foo);                            // registers a module under the "foo" namespace
 modules([                                   // registers two modules, one under the "foo" namespace, one under the "bar" namespace
-	["foo", foo],
-	["bar", bar],
+  ["foo", foo],
+  ["bar", bar],
 ])
 ```
 
