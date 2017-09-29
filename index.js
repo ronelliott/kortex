@@ -105,13 +105,14 @@ const run = (name, params, callback) => {
 	let action = objectPath.get(actions, name);
 	if (!action) return callback && callback(`Unknown action "${name}" requested`);
 
+	const prefix = name.substr(0, name.lastIndexOf("."));
+
 	const ctx = {
 		params,
 		state: {
 			data: state,
-			set: (key, value) => {
-				set(`${name.substr(0, name.lastIndexOf("."))}.${key}`, value);
-			},
+			get: key => get(`${prefix}.${key}`),
+			set: (key, value) => set(`${prefix}.${key}`, value),
 		}
 	}
 
