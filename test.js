@@ -29,12 +29,12 @@ describe("kortex", function() {
 			let oldOn = state.updates.on;
 			state.updates.on = sinon.spy(oldOn);
 			Enzyme.shallow(React.createElement(state.connect({
-				"foo": "connect_subscribe_mount_foo",
-				"bar": "connect_subscribe_mount_bar",
+				"foo": "state.connect_subscribe_mount_foo",
+				"bar": "state.connect_subscribe_mount_bar",
 			}, sinon.spy())));
 			expect(state.updates.on.called).to.be(true);
-			expect(state.updates.on.calledWith("connect_subscribe_mount_foo")).to.be(true);
-			expect(state.updates.on.calledWith("connect_subscribe_mount_bar")).to.be(true);
+			expect(state.updates.on.calledWith("state.connect_subscribe_mount_foo")).to.be(true);
+			expect(state.updates.on.calledWith("state.connect_subscribe_mount_bar")).to.be(true);
 			state.updates.on = oldOn;
 		});
 
@@ -42,12 +42,12 @@ describe("kortex", function() {
 			let oldRemoveListener = state.updates.removeListener;
 			state.updates.removeListener = sinon.spy(oldRemoveListener);
 			Enzyme.shallow(React.createElement(state.connect({
-				"foo": "connect_unsubscribe_unmount_foo",
-				"bar": "connect_unsubscribe_unmount_bar",
+				"foo": "state.connect_unsubscribe_unmount_foo",
+				"bar": "state.connect_unsubscribe_unmount_bar",
 			}, sinon.spy()))).unmount();;
 			expect(state.updates.removeListener.called).to.be(true);
-			expect(state.updates.removeListener.calledWith("connect_unsubscribe_unmount_foo")).to.be(true);
-			expect(state.updates.removeListener.calledWith("connect_unsubscribe_unmount_bar")).to.be(true);
+			expect(state.updates.removeListener.calledWith("state.connect_unsubscribe_unmount_foo")).to.be(true);
+			expect(state.updates.removeListener.calledWith("state.connect_unsubscribe_unmount_bar")).to.be(true);
 			state.updates.removeListener = oldRemoveListener;
 		});
 	});
@@ -96,8 +96,8 @@ describe("kortex", function() {
 			state.set("props_all_requested_foo", "bar");
 			state.set("props_all_requested_bar", "foo");
 			expect(state.props({
-				foo: "props_all_requested_foo",
-				bar: "props_all_requested_bar",
+				foo: "state.props_all_requested_foo",
+				bar: "state.props_all_requested_bar",
 			})).to.eql({
 				foo: "bar",
 				bar: "foo",
@@ -150,7 +150,7 @@ describe("kortex", function() {
 
 		it("should emit an update event", function() {
 			let spy = sinon.spy();
-			state.updates.on("state_events_foo", spy);
+			state.updates.on("state.state_events_foo", spy);
 			state.set("state_events_foo", "bar");
 			expect(spy.called).to.be(true);
 		});

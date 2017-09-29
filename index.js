@@ -64,8 +64,28 @@ const mods = modules => {
 }
 
 const props = requested => {
+	const context = {
+		actions,
+		state,
+	}
+
 	return Object.keys(requested).reduce((all, name) => {
-		all[name] = objectPath.get(state, requested[name]);
+		let path = requested[name];
+		let source = path.substr(0, path.indexOf("."));
+		path = path.substr(source.length + 1);
+
+		if (source == "state") {
+			all[name] = objectPath.get(state, path);
+		}
+
+		else if (source == "actions") {
+			all[name] = action(path);
+		}
+
+		else {
+			console.error(`Unknown source: "${source}"`);
+		}
+
 		return all;
 	}, {});
 }
@@ -74,6 +94,10 @@ const run = (name, params, callback) => {
 	if (typeof params == "function" && typeof callback == "undefined") {
 		callback = params;
 		params = {};
+	}
+
+	if (typeof callback == "undefined") {
+		callback = err => err && console.error(err)
 	}
 
 	let action = objectPath.get(actions, name);
@@ -97,7 +121,7 @@ const set = (key, value) => {
 	let newState = { ...state };
 	objectPath.set(newState, key, value);
 	update(newState);
-	updates.emit(key, key, value);
+	updates.emit(`state.${key}`, key, value);
 }
 
 const update = newState => {
