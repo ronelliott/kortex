@@ -9,6 +9,10 @@ Dead simple state management for react.
 
     $ npm install kortex
 
+## Examples
+
+* [Counter](https://github.com/ronelliott/kortex-example-counter)]
+
 ## Usage
 
 ### Connecting
