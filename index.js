@@ -102,6 +102,11 @@ const run = (name, params, callback) => {
 		callback = err => err && console.error(err)
 	}
 
+	if (Array.isArray(name)) {
+		name.forEach(n => run(n, params));
+		return callback && callback();
+	}
+
 	let action = objectPath.get(actions, name);
 	if (!action) return callback && callback(`Unknown action "${name}" requested`);
 

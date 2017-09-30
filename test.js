@@ -146,6 +146,21 @@ describe("kortex", function() {
 			state.run("run_correct_params", "foo");
 			expect(spy.called).to.be(true);
 		});
+
+		it("should handle arrays passed as names", function(done) {
+			let spy1 = sinon.spy();
+			let spy2 = sinon.spy();
+			state.actions.run_handle_arrays_one = spy1;
+			state.actions.run_handle_arrays_two = spy2;
+			state.run([
+				"run_handle_arrays_one",
+				"run_handle_arrays_two",
+			], err => {
+				expect(spy1.called).to.be(true);
+				expect(spy2.called).to.be(true);
+				done();
+			});
+		});
 	});
 
 	describe("set", function() {
