@@ -1,7 +1,6 @@
 const React = require("react");
 const EventEmitter = require("events");
 const objectPath = require("object-path");
-const async = require("async");
 
 let state = {};
 const actions = {};
@@ -92,26 +91,13 @@ const props = requested => {
 	}, {});
 }
 
-const run = (name, params, callback) => {
-	if (typeof params == "function" && typeof callback == "undefined") {
-		callback = params;
-		params = {};
-	}
-
-	if (typeof callback == "undefined") {
-		callback = err => err && console.error(err)
-	}
-
-	if (Array.isArray(name)) {
-		name.forEach(n => run(n, params));
-		return callback && callback();
-	}
+const run = (name, params) => {
+	if (Array.isArray(name)) return name.forEach(n => run(n, params));
 
 	let action = objectPath.get(actions, name);
-	if (!action) return callback && callback(`Unknown action "${name}" requested`);
+	if (!action) throw `Unknown action "${name}" requested`;
 
-	const prefix = name.substr(0, name.lastIndexOf("."));
-
+	let prefix = name.substr(0, name.lastIndexOf("."));
 	const ctx = {
 		params,
 		state: {
@@ -121,8 +107,8 @@ const run = (name, params, callback) => {
 		}
 	}
 
-	if (typeof action == "function") action(ctx, callback);
-	else if (Array.isArray(action)) async.series(action.map(a => next => a(ctx, next)), callback);
+	if (typeof action == "function") action(ctx);
+	else if (Array.isArray(action)) action.map(a => a(ctx));
 }
 
 const set = (key, value) => {

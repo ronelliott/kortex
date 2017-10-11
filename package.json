@@ -26,7 +26,6 @@
     "test:coverage": "./node_modules/.bin/nyc -r lcov ./node_modules/.bin/mocha"
   },
   "dependencies": {
-    "async": "^2.5.0",
     "object-path": "^0.11.4",
     "react": "^16.0.0"
   },

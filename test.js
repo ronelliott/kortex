@@ -114,12 +114,9 @@ describe("kortex", function() {
 	});
 
 	describe("run", function() {
-		it("should produce an error if the given action does not exist", function(done) {
+		it("should produce an error if the given action does not exist", function() {
 			let action = "asdfasdfasdfasdfasdfasdfasdffdasfdafdafdafdafdafdasfda";
-			state.run(action, err => {
-				expect(err).to.be(`Unknown action "${action}" requested`);
-				done();
-			});
+			expect(() => state.run(action)).to.throwException(`Unknown action "${action}" requested`);
 		});
 
 		it("should handle function actions", function() {
@@ -130,8 +127,8 @@ describe("kortex", function() {
 		});
 
 		it("should handle array actions", function() {
-			let spy1 = sinon.spy((params, next) => next());
-			let spy2 = sinon.spy((params, next) => next());
+			let spy1 = sinon.spy();
+			let spy2 = sinon.spy();
 			state.actions.run_handle_arrays = [spy1, spy2];
 			state.run("run_handle_arrays");
 			expect(spy1.called).to.be.ok();
@@ -139,15 +136,13 @@ describe("kortex", function() {
 		});
 
 		it("should call the action with the given params", function() {
-			let spy = sinon.spy(({ params }) => {
-				expect(params).to.equal("foo");
-			});
+			let spy = sinon.spy(({ params }) => expect(params).to.equal("foo"));
 			state.actions.run_correct_params = spy;
 			state.run("run_correct_params", "foo");
 			expect(spy.called).to.be(true);
 		});
 
-		it("should handle arrays passed as names", function(done) {
+		it("should handle arrays passed as names", function() {
 			let spy1 = sinon.spy();
 			let spy2 = sinon.spy();
 			state.actions.run_handle_arrays_one = spy1;
@@ -155,11 +150,26 @@ describe("kortex", function() {
 			state.run([
 				"run_handle_arrays_one",
 				"run_handle_arrays_two",
-			], err => {
-				expect(spy1.called).to.be(true);
-				expect(spy2.called).to.be(true);
-				done();
-			});
+			]);
+			expect(spy1.called).to.be(true);
+			expect(spy2.called).to.be(true);
+		});
+
+		it("should on call each action in nested array once", function() {
+			let spy1 = sinon.spy();
+			let spy2 = sinon.spy();
+			let spy3 = sinon.spy();
+			let spy4 = sinon.spy();
+			state.actions.run_handle_arrays_one = [spy1, spy2];
+			state.actions.run_handle_arrays_two = [spy3, spy4];
+			state.run([
+				"run_handle_arrays_one",
+				"run_handle_arrays_two",
+			]);
+			expect(spy1.callCount).to.be(1);
+			expect(spy2.callCount).to.be(1);
+			expect(spy3.callCount).to.be(1);
+			expect(spy4.callCount).to.be(1);
 		});
 	});
 
