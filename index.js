@@ -4,6 +4,7 @@ const objectPath = require("object-path");
 
 let state = {};
 const actions = {};
+const events = new EventEmitter();
 const updates = new EventEmitter();
 
 const context = {
@@ -11,7 +12,7 @@ const context = {
 	state,
 }
 
-const action = name => (params, callback) => run(name, params, callback)
+const action = name => (params, callback) => run(name, params, callback);
 
 const connect = (requested, Component) => {
 	if (typeof Component == "undefined") {
@@ -60,9 +61,7 @@ const mod = (namespace, mod) => {
 	}
 }
 
-const mods = modules => {
-	modules.forEach(m => mod(m[0], m[1]))
-}
+const mods = modules => modules.forEach(m => mod(m[0], m[1]));
 
 const props = requested => {
 	const context = {
@@ -118,16 +117,27 @@ const set = (key, value) => {
 	updates.emit(`state.${key}`, key, value);
 }
 
+const toggle = key => set(key, !get(key));
+
+const toggler = key => () => toggle(key);
+
+const togglerAction = key => ({ state }) => state.set(key, !state.get(key));
+
 const update = newState => {
 	state = newState;
 	context.state = state;
 	module.exports.state = state;
 }
 
+const updater = key => value => set(key, value);
+
+const updaterAction = key => ({ params, state }) => state.set(key, params);
+
 module.exports = {
 	action,
 	actions,
 	connect,
+	events,
 	get,
 	module: mod,
 	modules: mods,
@@ -135,6 +145,11 @@ module.exports = {
 	run,
 	set,
 	state,
+	toggle,
+	toggler,
+	togglerAction,
 	update,
+	updater,
+	updaterAction,
 	updates,
 }
