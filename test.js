@@ -261,4 +261,19 @@ describe("kortex", function() {
 			expect(kortex.state.state_updater_action_bar).to.equal("foo");
 		});
 	});
+
+	describe("updaterEventAction", function() {
+		it("should update the given key", function() {
+			const foo_updater = kortex.updaterEventAction("state_updater_event_action_foo");
+			const bar_updater = kortex.updaterEventAction("state_updater_event_action_bar");
+			kortex.set("state_updater_event_action_foo", "foo");
+			kortex.set("state_updater_event_action_bar", "bar");
+			expect(kortex.state.state_updater_event_action_foo).to.equal("foo");
+			expect(kortex.state.state_updater_event_action_bar).to.equal("bar");
+			foo_updater({ params: { target: { value: "bar" } }, state: kortex });
+			bar_updater({ params: { target: { value: "foo" } }, state: kortex });
+			expect(kortex.state.state_updater_event_action_foo).to.equal("bar");
+			expect(kortex.state.state_updater_event_action_bar).to.equal("foo");
+		});
+	});
 })

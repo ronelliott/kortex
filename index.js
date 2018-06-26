@@ -132,6 +132,7 @@ const update = newState => {
 const updater = key => value => set(key, value);
 
 const updaterAction = key => ({ params, state }) => state.set(key, params);
+const updaterEventAction = key => ({ params, state }) => state.set(key, params.target.value);
 
 module.exports = {
 	action,
@@ -151,5 +152,6 @@ module.exports = {
 	update,
 	updater,
 	updaterAction,
+	updaterEventAction,
 	updates,
 }
