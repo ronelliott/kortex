@@ -139,7 +139,11 @@ const run = (name, params) => {
 		state: {
 			data: state,
 			get: key => get(`${prefix}.${key}`),
+			pop: key => pop(`${prefix}.${key}`),
+			push: (key, value) => push(`${prefix}.${key}`, value),
 			set: (key, value) => set(`${prefix}.${key}`, value),
+			shift: key => shift(`${prefix}.${key}`),
+			unshift: (key, value) => unshift(`${prefix}.${key}`, value),
 		}
 	}
 
