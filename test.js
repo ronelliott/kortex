@@ -22,6 +22,14 @@ describe("kortex", function() {
 			kortex.action("action_create_gen_foo")("foo");
 			expect(spy.called).to.be(true);
 		});
+
+		it("should return the value returned by the action", function() {
+			let spy = sinon.spy(() => "foo");
+			kortex.actions.action_create_gen_foo = spy;
+			const value = kortex.action("action_create_gen_foo")();
+			expect(spy.called).to.be(true);
+			expect(value).to.equal("foo");
+		});
 	});
 
 	describe("connect", function() {
@@ -99,6 +107,34 @@ describe("kortex", function() {
 		});
 	});
 
+	describe("pop", function() {
+		it("should pop from array values", function() {
+			kortex.set("pop_array_value", ["foo", "bar", "dar"]);
+			const value1 = kortex.pop("pop_array_value");
+			const value2 = kortex.pop("pop_array_value");
+			const values = kortex.get("pop_array_value");
+			expect(value1).to.equal("dar");
+			expect(value2).to.equal("bar");
+			expect(values).to.eql(["foo"]);
+		});
+
+		it("should pop from non-existent values", function() {
+			const value1 = kortex.pop("pop_nonexistent_value");
+			const value2 = kortex.pop("pop_nonexistent_value");
+			const values = kortex.get("pop_nonexistent_value");
+			expect(value1).to.be(undefined);
+			expect(value2).to.be(undefined);
+			expect(values).to.eql([]);
+		});
+
+		it("should not pop from non-array values", function() {
+			kortex.set("pop_non_array_value", "foo");
+			const value = kortex.pop("pop_non_array_value");
+			expect(kortex.get("pop_non_array_value")).to.equal("foo");
+			expect(value).to.be(undefined);
+		});
+	});
+
 	describe("props", function() {
 		it("should return all requested keys", function() {
 			kortex.set("props_all_requested_foo", "bar");
@@ -110,6 +146,29 @@ describe("kortex", function() {
 				foo: "bar",
 				bar: "foo",
 			});
+		});
+	});
+
+	describe("push", function() {
+		it("should push into array values", function() {
+			kortex.set("push_array_value", []);
+			kortex.push("push_array_value", "foo");
+			kortex.push("push_array_value", "bar");
+			const values = kortex.get("push_array_value");
+			expect(values).to.eql(["foo", "bar"]);
+		});
+
+		it("should push into non-existent values", function() {
+			kortex.push("push_nonexistent_value", "foo");
+			kortex.push("push_nonexistent_value", "bar");
+			const values = kortex.get("push_nonexistent_value");
+			expect(values).to.eql(["foo", "bar"]);
+		});
+
+		it("should not push into non-array values", function() {
+			kortex.set("push_non_array_value", "foo");
+			kortex.push("push_non_array_value", "bar");
+			expect(kortex.get("push_non_array_value")).to.equal("foo");
 		});
 	});
 
@@ -171,6 +230,14 @@ describe("kortex", function() {
 			expect(spy3.callCount).to.be(1);
 			expect(spy4.callCount).to.be(1);
 		});
+
+		it("should return the value returned by the action", function() {
+			let spy = sinon.spy(() => "foo");
+			kortex.actions.run_return_values = spy;
+			const value = kortex.run("run_return_values");
+			expect(spy.called).to.be(true);
+			expect(value).to.equal("foo");
+		});
 	});
 
 	describe("set", function() {
@@ -186,6 +253,34 @@ describe("kortex", function() {
 			kortex.updates.on("state.state_events_foo", spy);
 			kortex.set("state_events_foo", "bar");
 			expect(spy.called).to.be(true);
+		});
+	});
+
+	describe("shift", function() {
+		it("should shift from array values", function() {
+			kortex.set("shift_array_value", ["foo", "bar", "dar"]);
+			const value1 = kortex.shift("shift_array_value");
+			const value2 = kortex.shift("shift_array_value");
+			const values = kortex.get("shift_array_value");
+			expect(value1).to.equal("foo");
+			expect(value2).to.equal("bar");
+			expect(values).to.eql(["dar"]);
+		});
+
+		it("should shift from non-existent values", function() {
+			const value1 = kortex.shift("shift_nonexistent_value");
+			const value2 = kortex.shift("shift_nonexistent_value");
+			const values = kortex.get("shift_nonexistent_value");
+			expect(value1).to.be(undefined);
+			expect(value2).to.be(undefined);
+			expect(values).to.eql([]);
+		});
+
+		it("should not shift from non-array values", function() {
+			kortex.set("shift_non_array_value", "foo");
+			const value = kortex.shift("shift_non_array_value");
+			expect(kortex.get("shift_non_array_value")).to.equal("foo");
+			expect(value).to.be(undefined);
 		});
 	});
 
@@ -229,6 +324,29 @@ describe("kortex", function() {
 			bar_toggler({ state: kortex });
 			expect(kortex.state.state_toggler_action_foo).to.equal(true);
 			expect(kortex.state.state_toggler_action_bar).to.equal(false);
+		});
+	});
+
+	describe("unshift", function() {
+		it("should unshift into array values", function() {
+			kortex.set("unshift_array_value", []);
+			kortex.unshift("unshift_array_value", "foo");
+			kortex.unshift("unshift_array_value", "bar");
+			const values = kortex.get("unshift_array_value");
+			expect(values).to.eql(["bar", "foo"]);
+		});
+
+		it("should unshift into non-existent values", function() {
+			kortex.unshift("unshift_nonexistent_value", "foo");
+			kortex.unshift("unshift_nonexistent_value", "bar");
+			const values = kortex.get("unshift_nonexistent_value");
+			expect(values).to.eql(["bar", "foo"]);
+		});
+
+		it("should not unshift into non-array values", function() {
+			kortex.set("unshift_non_array_value", "foo");
+			kortex.unshift("unshift_non_array_value", "bar");
+			expect(kortex.get("unshift_non_array_value")).to.equal("foo");
 		});
 	});
 

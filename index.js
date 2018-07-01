@@ -63,6 +63,19 @@ const mod = (namespace, mod) => {
 
 const mods = modules => modules.forEach(m => mod(m[0], m[1]));
 
+const pop = key => {
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot pop from non-array "${key}"`);
+		return;
+	}
+
+	const value = values.pop();
+	set(key, values);
+	return value;
+}
+
 const props = requested => {
 	const context = {
 		actions,
@@ -90,6 +103,30 @@ const props = requested => {
 	}, {});
 }
 
+const push = (key, value) => {
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot push into non-array "${key}"`);
+		return;
+	}
+
+	values.push(value);
+	set(key, values);
+}
+
+const unshift = (key, value) => {
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot unshift into non-array "${key}"`);
+		return;
+	}
+
+	values.unshift(value);
+	set(key, values);
+}
+
 const run = (name, params) => {
 	if (Array.isArray(name)) return name.forEach(n => run(n, params));
 
@@ -106,8 +143,8 @@ const run = (name, params) => {
 		}
 	}
 
-	if (typeof action == "function") action(ctx);
-	else if (Array.isArray(action)) action.map(a => a(ctx));
+	if (typeof action == "function") return action(ctx);
+	else if (Array.isArray(action)) return action.map(a => a(ctx));
 }
 
 const set = (key, value) => {
@@ -115,6 +152,19 @@ const set = (key, value) => {
 	objectPath.set(newState, key, value);
 	update(newState);
 	updates.emit(`state.${key}`, key, value);
+}
+
+const shift = key => {
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot shift from non-array "${key}"`);
+		return;
+	}
+
+	const value = values.shift();
+	set(key, values);
+	return value;
 }
 
 const toggle = key => set(key, !get(key));
@@ -140,15 +190,21 @@ module.exports = {
 	connect,
 	events,
 	get,
+	mod,
+	mods,
 	module: mod,
 	modules: mods,
+	pop,
 	props,
+	push,
 	run,
 	set,
+	shift,
 	state,
 	toggle,
 	toggler,
 	togglerAction,
+	unshift,
 	update,
 	updater,
 	updaterAction,
