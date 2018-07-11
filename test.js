@@ -60,11 +60,65 @@ describe("kortex", function() {
 		});
 	});
 
+	describe("filter", function() {
+		it("should filter values into an existing key", function() {
+			kortex.set("filter_existing_key", ["foo", "foo", "dar"]);
+			kortex.filter("filter_existing_key", value => value != "dar");
+			expect(kortex.get("filter_existing_key")).to.eql(["foo", "foo"]);
+		});
+
+		it("should filter values into an non-existing key", function() {
+			expect(kortex.get("filter_nonexisting_key")).to.eql(undefined);
+			kortex.filter("filter_nonexisting_key", value => value != "dar");
+			expect(kortex.get("filter_nonexisting_key")).to.eql([]);
+		});
+
+		it("should filter values into the given key", function() {
+			kortex.set("filter_existing_key", ["foo", "foo", "dar"]);
+			kortex.filter("filter_existing_key", "filter_given_key", value => value != "dar");
+			expect(kortex.get("filter_existing_key")).to.eql(["foo", "foo", "dar"]);
+			expect(kortex.get("filter_given_key")).to.eql(["foo", "foo"]);
+		});
+
+		it("should not filter into non-array values", function() {
+			kortex.set("filter_non_array_value", "foo");
+			kortex.filter("filter_non_array_value", value => value != "dar");
+			expect(kortex.get("filter_non_array_value")).to.equal("foo");
+		});
+	});
+
 	describe("get", function() {
 		it("should work correctly", function() {
 			expect(kortex.get("get_work_correctly_foo")).to.be(undefined);
 			kortex.set("get_work_correctly_foo", "foo");
 			expect(kortex.get("get_work_correctly_foo")).to.be("foo");
+		});
+	});
+
+	describe("map", function() {
+		it("should map values into an existing key", function() {
+			kortex.set("map_existing_key", ["foo", "foo", "dar"]);
+			kortex.map("map_existing_key", value => value + value);
+			expect(kortex.get("map_existing_key")).to.eql(["foofoo", "foofoo", "dardar"]);
+		});
+
+		it("should map values into an non-existing key", function() {
+			expect(kortex.get("map_nonexisting_key")).to.eql(undefined);
+			kortex.map("map_nonexisting_key", value => value + value);
+			expect(kortex.get("map_nonexisting_key")).to.eql([]);
+		});
+
+		it("should map values into the given key", function() {
+			kortex.set("map_existing_key", ["foo", "foo", "dar"]);
+			kortex.map("map_existing_key", "map_given_key", value => value + value);
+			expect(kortex.get("map_existing_key")).to.eql(["foo", "foo", "dar"]);
+			expect(kortex.get("map_given_key")).to.eql(["foofoo", "foofoo", "dardar"]);
+		});
+
+		it("should not map into non-array values", function() {
+			kortex.set("map_non_array_value", "foo");
+			kortex.map("map_non_array_value", value => value + value);
+			expect(kortex.get("map_non_array_value")).to.equal("foo");
 		});
 	});
 
@@ -169,6 +223,58 @@ describe("kortex", function() {
 			kortex.set("push_non_array_value", "foo");
 			kortex.push("push_non_array_value", "bar");
 			expect(kortex.get("push_non_array_value")).to.equal("foo");
+		});
+	});
+
+	describe("reduce", function() {
+		it("should reduce values into an existing key", function() {
+			kortex.set("reduce_existing_key", ["foo", "foo", "dar"]);
+			kortex.reduce("reduce_existing_key", (all, value) => all + value);
+			expect(kortex.get("reduce_existing_key")).to.equal("foofoodar");
+		});
+
+		it("should reduce values into an non-existing key", function() {
+			expect(kortex.get("reduce_nonexisting_key")).to.eql(undefined);
+			kortex.reduce("reduce_nonexisting_key", (all, value) => all + value);
+			expect(kortex.get("reduce_nonexisting_key")).to.eql([]);
+		});
+
+		it("should reduce values into the given key", function() {
+			kortex.set("reduce_existing_key", ["foo", "foo", "dar"]);
+			kortex.reduce("reduce_existing_key", "reduce_given_key", (all, value) => all + value);
+			expect(kortex.get("reduce_existing_key")).to.eql(["foo", "foo", "dar"]);
+			expect(kortex.get("reduce_given_key")).to.eql("foofoodar");
+		});
+
+		it("should allow changing the starting value", function() {
+			kortex.set("reduce_default_value_key", ["foo", "foo", "dar"]);
+			kortex.reduce("reduce_default_value_key", (all, value) => {
+				all[value] = value != "dar";
+				return all;
+			}, {});
+			expect(kortex.get("reduce_default_value_key")).to.eql({
+				foo: true,
+				dar: false,
+			});
+		});
+
+		it("should allow changing the starting value and reducing into the given key", function() {
+			kortex.set("reduce_default_value_given_key", ["foo", "foo", "dar"]);
+			kortex.reduce("reduce_default_value_given_key", "reduce_default_value_given_key_other", (all, value) => {
+				all[value] = value != "dar";
+				return all;
+			}, {});
+			expect(kortex.get("reduce_default_value_given_key")).to.eql(["foo", "foo", "dar"]);
+			expect(kortex.get("reduce_default_value_given_key_other")).to.eql({
+				foo: true,
+				dar: false,
+			});
+		});
+
+		it("should not reduce into non-array values", function() {
+			kortex.set("reduce_non_array_value", "foo");
+			kortex.reduce("reduce_non_array_value", (all, value) => all + value);
+			expect(kortex.get("reduce_non_array_value")).to.equal("foo");
 		});
 	});
 

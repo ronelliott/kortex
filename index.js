@@ -49,7 +49,43 @@ const connect = (requested, Component) => {
 	}
 }
 
+const filter = (key, intoKey, callback) => {
+	if (typeof intoKey == 'function' && typeof callback == 'undefined') {
+		callback = intoKey;
+		intoKey = key;
+	}
+
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot filter non-array "${key}"`);
+		return;
+	}
+
+	const filtered = values.filter(callback);
+	set(intoKey, filtered);
+	return filtered;
+}
+
 const get = path => objectPath.get(state, path);
+
+const map = (key, intoKey, callback) => {
+	if (typeof intoKey == 'function' && typeof callback == 'undefined') {
+		callback = intoKey;
+		intoKey = key;
+	}
+
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot map non-array "${key}"`);
+		return;
+	}
+
+	const mapped = values.map(callback);
+	set(intoKey, mapped);
+	return mapped;
+}
 
 const mod = (namespace, mod) => {
 	if (mod.actions) {
@@ -113,6 +149,29 @@ const push = (key, value) => {
 
 	values.push(value);
 	set(key, values);
+}
+
+const reduce = (key, intoKey, callback, defaultValue) => {
+	if (typeof intoKey == 'function' && typeof callback !== 'function') {
+		defaultValue = callback;
+		callback = intoKey;
+		intoKey = key;
+	}
+
+	if (typeof defaultValue == 'undefined') {
+		defaultValue = [];
+	}
+
+	const values = get(key) || [];
+
+	if (!Array.isArray(values)) {
+		console.log(`Cannot reduce non-array "${key}"`);
+		return;
+	}
+
+	const reduced = values.reduce(callback, defaultValue);
+	set(intoKey, reduced);
+	return reduced;
 }
 
 const unshift = (key, value) => {
@@ -193,7 +252,9 @@ module.exports = {
 	actions,
 	connect,
 	events,
+	filter,
 	get,
+	map,
 	mod,
 	mods,
 	module: mod,
@@ -201,6 +262,7 @@ module.exports = {
 	pop,
 	props,
 	push,
+	reduce,
 	run,
 	set,
 	shift,
