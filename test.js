@@ -471,6 +471,21 @@ describe("kortex", function() {
 		});
 	});
 
+	describe("updaterEvent", function() {
+		it("should update the given key", function() {
+			const foo_updater = kortex.updaterEvent("state_updater_event_foo");
+			const bar_updater = kortex.updaterEvent("state_updater_event_bar");
+			kortex.set("state_updater_event_foo", "foo");
+			kortex.set("state_updater_event_bar", "bar");
+			expect(kortex.state.state_updater_event_foo).to.equal("foo");
+			expect(kortex.state.state_updater_event_bar).to.equal("bar");
+			foo_updater({ target: { value: "bar" } });
+			bar_updater({ target: { value: "foo" } });
+			expect(kortex.state.state_updater_event_foo).to.equal("bar");
+			expect(kortex.state.state_updater_event_bar).to.equal("foo");
+		});
+	});
+
 	describe("updaterAction", function() {
 		it("should update the given key", function() {
 			const foo_updater = kortex.updaterAction("state_updater_action_foo");

@@ -244,6 +244,8 @@ const update = newState => {
 
 const updater = key => value => set(key, value);
 
+const updaterEvent = key => event => set(key, event.target.value);
+
 const updaterAction = key => ({ params, state }) => state.set(key, params);
 const updaterEventAction = key => ({ params, state }) => state.set(key, params.target.value);
 
@@ -273,6 +275,7 @@ module.exports = {
 	unshift,
 	update,
 	updater,
+	updaterEvent,
 	updaterAction,
 	updaterEventAction,
 	updates,
