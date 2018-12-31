@@ -12,7 +12,7 @@ const context = {
 	state,
 }
 
-const action = name => (...params) => run(name, params);
+const action = name => params => run(name, params);
 
 const connect = (requested, Component) => {
 	if (typeof Component == "undefined") {
