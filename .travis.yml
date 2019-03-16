@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-  - 8.5
+  - 8.15.0
+  - 10.15.1
+  - 11.10.0
 script:
   npm run test:coverage
 after_success:
