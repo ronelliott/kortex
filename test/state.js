@@ -14,46 +14,6 @@ describe('State', function() {
 		});
 	});
 
-	describe('Events', function() {
-		describe('notifyUpdated', function() {
-			it('should send an updated event', function() {
-				const spy = sinon.spy();
-				this.state.on('updated:something', spy);
-				this.state.notifyUpdated('something', false);
-				spy.called.should.equal(true);
-				spy.calledWith(false).should.equal(true);
-			});
-		});
-
-		describe('watch', function() {
-			it('should call the callback when the key is updated', function() {
-				const spy = sinon.spy();
-				this.state.watch('something', spy);
-				this.state.set('something', false);
-				spy.called.should.equal(true);
-			});
-		});
-
-		describe('unwatch', function() {
-			it('should not call the callback after it has been removed', function() {
-				const spy_1 = sinon.spy();
-				const spy_2 = sinon.spy();
-				this.state.watch('something', spy_1);
-				this.state.watch('something', spy_2);
-
-				this.state.set('something', false);
-				spy_1.callCount.should.equal(1);
-				spy_2.callCount.should.equal(1);
-
-				this.state.unwatch('something', spy_1);
-
-				this.state.set('something', false);
-				spy_1.callCount.should.equal(1);
-				spy_2.callCount.should.equal(2);
-			});
-		});
-	});
-
 	describe('Generic', function() {
 		describe('del', function() {
 			it('should remove the key', function() {
@@ -114,6 +74,46 @@ describe('State', function() {
 				this.state.set('something', false);
 				spy.called.should.equal(true);
 				spy.calledWith(false).should.equal(true);
+			});
+		});
+	});
+
+	describe('Events', function() {
+		describe('notifyUpdated', function() {
+			it('should send an updated event', function() {
+				const spy = sinon.spy();
+				this.state.on('updated:something', spy);
+				this.state.notifyUpdated('something', false);
+				spy.called.should.equal(true);
+				spy.calledWith(false).should.equal(true);
+			});
+		});
+
+		describe('watch', function() {
+			it('should call the callback when the key is updated', function() {
+				const spy = sinon.spy();
+				this.state.watch('something', spy);
+				this.state.set('something', false);
+				spy.called.should.equal(true);
+			});
+		});
+
+		describe('unwatch', function() {
+			it('should not call the callback after it has been removed', function() {
+				const spy_1 = sinon.spy();
+				const spy_2 = sinon.spy();
+				this.state.watch('something', spy_1);
+				this.state.watch('something', spy_2);
+
+				this.state.set('something', false);
+				spy_1.callCount.should.equal(1);
+				spy_2.callCount.should.equal(1);
+
+				this.state.unwatch('something', spy_1);
+
+				this.state.set('something', false);
+				spy_1.callCount.should.equal(1);
+				spy_2.callCount.should.equal(2);
 			});
 		});
 	});
