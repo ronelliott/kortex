@@ -1,5 +1,3 @@
-require('should');
-const expect = require('expect.js');
 const sinon = require('sinon');
 
 const State = require('../lib/State');
@@ -76,6 +74,15 @@ describe('State', function() {
 				spy.calledWith(false).should.equal(true);
 			});
 		});
+
+		describe('misc', function() {
+			it('should allow construction with no given state', function() {
+				const state = new State();
+				should(state.get('something')).equal(undefined);
+				state.set('something', 'less ambiguous');
+				state.get('something').should.equal('less ambiguous');
+			});
+		});
 	});
 
 	describe('Events', function() {
@@ -121,7 +128,9 @@ describe('State', function() {
 	describe('Array', function() {
 		describe('getArray', function() {
 			it('should throw an error if the given key is not an array', function() {
-				expect(() => this.state.getArray('nope')).to.throwException('Key "nope" is not an array');
+				should(() => {
+					this.state.getArray('nope');
+				}).throw('Key "nope" is not an array');
 			});
 
 			it('should return the array if the given key is an array', function() {
@@ -239,7 +248,9 @@ describe('State', function() {
 
 		describe('pop', function() {
 			it('should throw an error if the given key is not an array', function() {
-				expect(() => this.state.pop('nope', 'nope')).to.throwException('Key "nope" is not an array');
+				should(() => {
+					this.state.pop('nope', 'nope')
+				}).throw('Key "nope" is not an array');
 			});
 
 			it('should pop values from the given key', function() {
@@ -258,7 +269,9 @@ describe('State', function() {
 
 		describe('push', function() {
 			it('should throw an error if the given key is not an array', function() {
-				expect(() => this.state.push('nope', 'nope')).to.throwException('Key "nope" is not an array');
+				should(() => {
+					this.state.push('nope', 'nope')
+				}).throw('Key "nope" is not an array');
 			});
 
 			it('should push values into the given key', function() {
@@ -277,7 +290,9 @@ describe('State', function() {
 
 		describe('shift', function() {
 			it('should throw an error if the given key is not an array', function() {
-				expect(() => this.state.shift('nope', 'nope')).to.throwException('Key "nope" is not an array');
+				should(() => {
+					this.state.shift('nope', 'nope')
+				}).throw('Key "nope" is not an array');
 			});
 
 			it('should shift values into the given key', function() {
@@ -296,7 +311,9 @@ describe('State', function() {
 
 		describe('unshift', function() {
 			it('should throw an error if the given key is not an array', function() {
-				expect(() => this.state.unshift('nope', 'nope')).to.throwException('Key "nope" is not an array');
+				should(() => {
+					this.state.unshift('nope', 'nope')
+				}).throw('Key "nope" is not an array');
 			});
 
 			it('should unshift values into the given key', function() {

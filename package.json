@@ -21,20 +21,23 @@
     "node": ">=8.5.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha",
-    "coverage:upload": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "test:coverage": "./node_modules/.bin/nyc -r lcov ./node_modules/.bin/mocha"
+    "test": "mocha -r should",
+    "coverage:upload": "cat ./coverage/lcov.info | coveralls",
+    "test:coverage": "nyc npm test",
+    "test:coverage:ci": "nyc -r lcov npm test"
   },
   "dependencies": {
     "object-path": "^0.11.4",
-    "react": "^16.8.6"
+    "react": "^16.13.0"
   },
   "devDependencies": {
-    "coveralls": "^3.0.3",
-    "expect.js": "^0.3.1",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
+    "coveralls": "^3.0.9",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "mocha": "^7.1.0",
+    "nyc": "^15.0.0",
+    "react-dom": "^16.13.0",
     "should": "^13.2.3",
-    "sinon": "^7.2.7"
+    "sinon": "^9.0.1"
   }
 }
