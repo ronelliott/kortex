@@ -9,8 +9,8 @@ const Actions = require('../lib/Actions');
 const Connector = require('../lib/Connector');
 const State = require('../lib/State');
 
-describe('Connector', function () {
-  beforeEach(function () {
+describe('Connector', function() {
+  beforeEach(function() {
     this.available_actions = {
       doSomething: sinon.spy(),
     };
@@ -23,23 +23,45 @@ describe('Connector', function () {
     this.connector = new Connector(this.actions, this.state);
   });
 
-  describe('misc', function () {
-    it('should throw an error if no actions are given upon creation', function () {
+  describe('misc', function() {
+    it('should throw an error if no actions are given upon creation', function() {
       should(() => {
         new Connector(null, this.state);
       }).throw('No actions given');
     });
 
-    it('should throw an error if no state is given upon creation', function () {
+    it('should throw an error if no state is given upon creation', function() {
       should(() => {
         new Connector(this.actions, null);
       }).throw('No state given');
     });
   });
 
-  describe('connect', function () {
+  describe('make', function() {
+    it('should build actions correctly', function() {
+      const { actions } = Connector.make({
+        something: {
+          actions: this.available_actions,
+        },
+      });
+
+      actions.actions.should.eql({ something: this.available_actions });
+    });
+
+    it('should build state correctly', function () {
+      const { state } = Connector.make({
+        something: {
+          state: this.starting_state,
+        },
+      });
+
+      state.store.should.eql({ something: this.starting_state });
+    });
+  });
+
+  describe('connect', function() {
     beforeEach(function() {
-      this.RawComponent = sinon.spy(({ totes }) => totes);
+      this.RawComponent = sinon.spy(({ totes }) => (totes || 'empty'));
     });
 
     it('should properly connect components', function() {
@@ -50,6 +72,13 @@ describe('Connector', function () {
       const element = React.createElement(ConnectedComponent);
       const component = enzyme.shallow(element);
       component.html().should.equal(this.starting_state.totes);
+    });
+
+    it('should allow empty requested keys', function () {
+      const ConnectedComponent = this.connector.connect(this.RawComponent);
+      const element = React.createElement(ConnectedComponent);
+      const component = enzyme.shallow(element);
+      component.html().should.equal('empty');
     });
 
     it('should subscribe to updates for interested keys when mounting', function() {
@@ -64,7 +93,7 @@ describe('Connector', function () {
       this.state.watch.called.should.equal(true);
     });
 
-    it('should unsubscribe from updates for interested keys when unmounting', function () {
+    it('should unsubscribe from updates for interested keys when unmounting', function() {
       this.state.unwatch = sinon.spy(this.state.unwatch);
       const ConnectedComponent = this.connector.connect(this.RawComponent, {
         totes: 'state.totes',
@@ -77,7 +106,7 @@ describe('Connector', function () {
     });
   });
 
-  describe('get', function () {
+  describe('get', function() {
     it('should get action values', function() {
       const action = this.connector.get('actions.doSomething');
       this.available_actions.doSomething.called.should.equal(false);
@@ -85,7 +114,7 @@ describe('Connector', function () {
       this.available_actions.doSomething.called.should.equal(true);
     });
 
-    it('should get action values', function () {
+    it('should get action values', function() {
       this.connector.get('state.foo').should.equal(this.starting_state.foo);
       this.connector.get('state.totes').should.equal(this.starting_state.totes);
     });
@@ -97,7 +126,7 @@ describe('Connector', function () {
     });
   });
 
-  describe('getAll', function () {
+  describe('getAll', function() {
     it('should get values correctly', function() {
       const things = this.connector.getAll({
         key1: 'actions.doSomething',
