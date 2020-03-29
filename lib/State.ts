@@ -1,9 +1,13 @@
-const op = require('object-path');
+import { EventEmitter } from 'events';
 
-const EventEmitter = require('events');
+import op from 'object-path';
 
-class State extends EventEmitter {
-	constructor(values) {
+import { Callback, StateMap, State } from './types';
+
+export default class StateImpl extends EventEmitter implements State {
+	protected store: StateMap;
+
+	constructor(values?: StateMap) {
 		super();
 		this.store = { ...(values || {}) };
 	}
@@ -12,20 +16,20 @@ class State extends EventEmitter {
 	// Generic methods
 	// ---------------------------------------------------------------------------
 
-	del(key) {
+	del(key: string): void {
 		op.del(this.store, key);
 		this.notifyUpdated(key);
 	}
 
-	get(key, default_value) {
+	get(key: string, default_value?: any): any {
 		return op.coalesce(this.store, [key], default_value);
 	}
 
-	has(key) {
+	has(key: string): boolean {
 		return op.has(this.store, key);
 	}
 
-	set(key, value) {
+	set(key: string, value: any): void {
 		op.set(this.store, key, value);
 		this.notifyUpdated(key, value);
 	}
@@ -34,15 +38,15 @@ class State extends EventEmitter {
 	// Event methods
 	// ---------------------------------------------------------------------------
 
-	notifyUpdated(key, value) {
+	notifyUpdated(key: string, value?: any): void {
 		this.emit(`updated:${key}`, value);
 	}
 
-	watch(key, callback) {
+	watch(key: string, callback: Callback): void {
 		this.on(`updated:${key}`, callback);
 	}
 
-	unwatch(key, callback) {
+	unwatch(key: string, callback: Callback): void {
 		this.removeListener(`updated:${key}`, callback);
 	}
 
@@ -50,7 +54,7 @@ class State extends EventEmitter {
 	// Array methods
 	// ---------------------------------------------------------------------------
 
-	getArray(key) {
+	getArray(key: string): any[] {
 		const value = this.get(key, []);
 
 		if (!Array.isArray(value)) {
@@ -60,7 +64,7 @@ class State extends EventEmitter {
 		return value;
 	}
 
-	filter(key, new_key, callback) {
+	filter(key: string, new_key: string, callback: Callback): void {
 		if (typeof new_key == 'function' && !callback) {
 			callback = new_key;
 			new_key = key;
@@ -72,7 +76,7 @@ class State extends EventEmitter {
 		this.set(new_key, new_values);
 	}
 
-	map(key, new_key, callback) {
+	map(key: string, new_key: string, callback: Callback): void {
 		if (typeof new_key == 'function' && !callback) {
 			callback = new_key;
 			new_key = key;
@@ -84,7 +88,7 @@ class State extends EventEmitter {
 		this.set(new_key, new_values);
 	}
 
-	reduce(key, new_key, callback, starting_value = []) {
+	reduce(key: string, new_key: string, callback: Callback, starting_value: any = []): void {
 		if (typeof new_key == 'function' && typeof callback != 'function') {
 			callback = new_key;
 			new_key = key;
@@ -96,24 +100,24 @@ class State extends EventEmitter {
 		this.set(new_key, new_values);
 	}
 
-	pop(key) {
+	pop(key: string): any {
 		const value = this.getArray(key).pop();
 		this.notifyUpdated(key, this.getArray(key));
 		return value;
 	}
 
-	push(key, value) {
+	push(key: string, value: any): void {
 		this.getArray(key).push(value);
 		this.notifyUpdated(key, this.getArray(key));
 	}
 
-	shift(key) {
+	shift(key: string): any {
 		const value = this.getArray(key).shift();
 		this.notifyUpdated(key, this.getArray(key));
 		return value;
 	}
 
-	unshift(key, value) {
+	unshift(key: string, value: any): void {
 		this.getArray(key).unshift(value);
 		this.notifyUpdated(key, this.getArray(key));
 	}
@@ -122,11 +126,9 @@ class State extends EventEmitter {
 	// Boolean methods
 	// ---------------------------------------------------------------------------
 
-	toggle(key) {
+	toggle(key: string): boolean {
 		const value = !this.get(key);
 		this.set(key, value);
 		return value;
 	}
 }
-
-module.exports = State;
