@@ -1,6 +1,6 @@
 {
   "name": "kortex",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Dead simple state management for react.",
   "main": "lib",
   "author": "Ron Elliott <ronaldbelliott@gmail.com>",
@@ -20,6 +20,7 @@
   "engines": {
     "node": ">=8.5.0"
   },
+  "types": "lib/types.d.ts",
   "scripts": {
     "test": "mocha -r should",
     "coverage:upload": "cat ./coverage/lcov.info | coveralls",
