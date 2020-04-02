@@ -126,6 +126,27 @@ describe('State', function() {
 	});
 
 	describe('Array', function() {
+		describe('concat', function () {
+			it('should throw an error if the given key is not an array', function () {
+				should(() => {
+					this.state.concat('nope', ['nope', 'yup', 'totes'])
+				}).throw('Key "nope" is not an array');
+			});
+
+			it('should push values into the given key', function () {
+				this.state.store.maybe.should.eql(['dunno', 'could be']);
+				this.state.concat('maybe', ['nope', 'yup', 'totes']);
+				this.state.store.maybe.should.eql(['dunno', 'could be', 'nope', 'yup', 'totes']);
+			});
+
+			it('should notify watchers of the key update', function () {
+				const spy = sinon.spy();
+				this.state.watch('maybe', spy);
+				this.state.concat('maybe', ['nope', 'yup', 'totes']);
+				spy.called.should.equal(true);
+			});
+		});
+
 		describe('getArray', function() {
 			it('should throw an error if the given key is not an array', function() {
 				should(() => {
@@ -305,6 +326,33 @@ describe('State', function() {
 				const spy = sinon.spy();
 				this.state.watch('maybe', spy);
 				this.state.shift('maybe', 'yup');
+				spy.called.should.equal(true);
+			});
+		});
+
+		describe('splice', function () {
+			it('should throw an error if the given key is not an array', function () {
+				should(() => {
+					this.state.splice('nope', 1, 1)
+				}).throw('Key "nope" is not an array');
+			});
+
+			it('should remove items from the array', function () {
+				this.state.store.maybe.should.eql(['dunno', 'could be']);
+				this.state.splice('maybe', 1, 1);
+				this.state.store.maybe.should.eql(['dunno']);
+			});
+
+			it('should add items to the array', function () {
+				this.state.store.maybe.should.eql(['dunno', 'could be']);
+				this.state.splice('maybe', 1, 1, 'hah', 'again');
+				this.state.store.maybe.should.eql(['dunno', 'hah', 'again']);
+			});
+
+			it('should notify watchers of the key update', function () {
+				const spy = sinon.spy();
+				this.state.watch('maybe', spy);
+				this.state.splice('maybe', 1, 1);
 				spy.called.should.equal(true);
 			});
 		});

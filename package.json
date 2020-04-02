@@ -1,6 +1,6 @@
 {
   "name": "kortex",
-  "version": "3.2.0",
+  "version": "3.4.0",
   "description": "Dead simple state management for react.",
   "main": "lib",
   "author": "Ron Elliott <ronaldbelliott@gmail.com>",

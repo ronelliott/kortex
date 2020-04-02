@@ -47,6 +47,7 @@ declare module 'kortex' {
     // ---------------------------------------------------------------------------
     // Array methods
     // ---------------------------------------------------------------------------
+    concat(key: string, values: any[]): void;
     getArray(key: string): any[];
     filter(key: string, new_key: string, callback: Callback): void;
     map(key: string, new_key: string, callback: Callback): void;
@@ -54,6 +55,7 @@ declare module 'kortex' {
     pop(key: string): any;
     push(key: string, value: any): void;
     shift(key: string): any;
+    splice(key: string, start: number, deleteCount: number, ...items: any[]): void;
     unshift(key: string, value: any): void;
 
     // ---------------------------------------------------------------------------
