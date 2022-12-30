@@ -35,7 +35,7 @@
     "coveralls": "^3.0.9",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "mocha": "^7.1.1",
+    "mocha": "^10.2.0",
     "nyc": "^15.0.0",
     "react-dom": "^16.13.0",
     "should": "^13.2.3",
